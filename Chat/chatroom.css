@@ -1,0 +1,144 @@
+.head{
+  position: sticky;
+  background-color: black;
+  width: 60%;
+  height: 10vh;
+  text-align: center;
+  padding-top: 12px;
+  font-size: x-large;
+  color: white;
+}
+.chat-box{
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 60%;
+  height: 78vh;
+  background-color: silver;
+  margin-top: auto;
+  padding-top: 20px;
+  padding-bottom: 5px;
+}
+
+.other-message{
+  margin-left: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.image{
+  background-color: burlywood;
+  text-align: center;
+  padding-top: 11px;
+  font-size: large;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.imagee{
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.chat-image{
+  max-width: 500px;
+  max-height: 200px;
+}
+
+
+.other-chat{
+  background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  color: aliceblue;
+  border-radius: 100px;
+  padding-left: 15px;
+  padding-top: 12px;
+  padding-right: 15px;
+  word-break: break-all;
+}
+
+.other-chat-image{
+  background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  padding-left: 15px;
+  padding-top: 12px;
+  padding-right: 15px;
+  padding-bottom: 12px;
+  word-break: break-all;
+}
+
+.my-message{
+  direction: rtl;
+  margin-right: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.my-chat{
+  background: rgb(200, 245, 133);
+  color: black;
+  border-radius: 100px;
+  padding-left: 15px;
+  padding-top: 12px;
+  padding-right: 15px;
+  word-break: break-all;
+}
+
+.my-chat-image{
+  background: rgb(200, 245, 133);
+  padding-left: 15px;
+  padding-top: 12px;
+  padding-right: 15px;
+  padding-bottom: 12px;
+  word-break: break-all;
+}
+
+
+.send-box{
+  position: fixed;
+  bottom: 0;
+  height: 12vh;
+  width: 60%;
+  background-color: aliceblue;
+}
+
+.send-form{
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.send{
+  margin-left: 10px;
+  height: 60%;
+  width: 50%;
+}
+
+.btnn:hover{
+  color: blue;
+}
+
+.btset{
+  position: fixed;
+  top: 10px; 
+  right: 300px;
+  color: aliceblue;
+}
+
+.btset:hover{
+  color: aqua;
+}
+
+.delete:hover{
+  color: crimson;
+}
+
+.btn-image{
+  bottom: 18px;
+  left: 49em;
+}
+
+.btn-block{
+  bottom: 18px;
+  left: 52em;
+}
