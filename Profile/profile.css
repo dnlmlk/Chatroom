@@ -1,0 +1,22 @@
+.procard{
+    height: 45vh;
+    background-color:azure;
+    margin-top: 10em;
+} 
+
+.imagee{
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.image{
+    background-color: burlywood;
+    text-align: center;
+    padding-top: 11px;
+    font-size:50px;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+  
