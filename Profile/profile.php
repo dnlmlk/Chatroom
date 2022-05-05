@@ -1,7 +1,9 @@
 <?php
 include "functions.php";
 
-$users=get_users_password("users.json");
+$pronames = get_profile_name();
+$proimages = get_profile_image();
+$names = getnames();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,27 +21,27 @@ $users=get_users_password("users.json");
     
     <div class="w-50 procard d-flex flex-column align-items-center gap-2 pt-3">
  
-        <?php if (isset($users[$_COOKIE["prouser"]]["proimg"])){?>
+        <?php if (isset($proimages[$_COOKIE["prouser"]])){?>
             <div class="">
-                <a href="<?php echo $users[$_COOKIE["prouser"]]["proimg"] ?>" target="_blank" rel="noopener noreferrer"><img class="img-fluid imagee" src="<?php echo $users[$_COOKIE["prouser"]]["proimg"] ?>" ></a>
+                <a href="<?php echo $proimages[$_COOKIE["prouser"]] ?>" target="_blank" rel="noopener noreferrer"><img class="img-fluid imagee" src="<?php echo $proimages[$_COOKIE["prouser"]] ?>" ></a>
             </div>
         <?php
             }
             else{?>
 
-            <div class="image fontprofile"><?php echo strtoupper($users[$_COOKIE["prouser"]]["profile"][0]) ?></div>
+            <div class="image fontprofile"><?php echo strtoupper($pronames[$_COOKIE["prouser"]][0]) ?></div>
                             
         <?php
             }?>
 
         <div>
             <span class="display-6 text-danger">Profile name:</span>
-            <span class="display-6 text-success"><?php echo $users[$_COOKIE["prouser"]]["profile"] ?></span>
+            <span class="display-6 text-success"><?php echo $pronames[$_COOKIE["prouser"]] ?></span>
         </div>
 
         <div>
             <span class="display-6 text-danger">Name:</span>
-            <span class="display-6 text-success"><?php echo $users[$_COOKIE["prouser"]]["name"] ?></span>
+            <span class="display-6 text-success"><?php echo $names[$_COOKIE["prouser"]] ?></span>
         </div>
 
         <?php
