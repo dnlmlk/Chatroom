@@ -67,11 +67,11 @@
 <?php
 include "functions.php";
 
-$users=get_users_password("users.json");
-$usernames=array_keys($users);
+//$users=get_users_password("users.json");
+//$usernames=array_keys($users);
+$usernames = get_userNames();
 
-
-$emails=get_emails("emails.json");
+$emails=get_emails();
 
 
 if (count($_POST)>0){
@@ -130,27 +130,7 @@ if (count($_POST)>0){
 
     if ($flag==true){
 
-
-        $ar=[
-            $_POST["username"] =>
-                [
-                    "pas"=>$_POST["pas"],
-                    "email"=>$_POST["email"],
-                    "name"=>$_POST["name"],
-                    "profile"=>$_POST["username"]
-                ]
-            ];
-        
-
-        $users=array_merge($users,$ar);
-        $obj=json_encode($users);
-        file_put_contents("users.json",$obj);
-
-
-        array_push($emails,$_POST["email"]);
-        $json_emails=json_encode($emails);
-        file_put_contents("emails.json",$json_emails);
-
+        insert_user($_POST["username"], $_POST["name"], $_POST["email"], $_POST["pas"]);
 
         foreach ($_POST as $key => $value) {
             setcookie($key,$value,time()+8600);
