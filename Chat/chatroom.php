@@ -9,18 +9,20 @@ if(isset($_COOKIE["prouser"])){
 
 include "functions.php";
 
-if (isset($_POST["block"]) || isset($_POST["unblock"])){
-    block($_POST["block"],"block-users.json");
-    unblock($_POST["unblock"],"block-users.json");
-}    
-$blockusers=get_block_users("block-users.json");
+if (isset($_POST["block"]))
+    block($_POST["block"]);
+if (isset($_POST["unblock"]))
+    unblock($_POST["unblock"]);
+
+$blockusers=get_block_users();
 
 rename_profile();
 upload_new_iamge_profile();
 
-sent_image();
 
-$users=get_users_password("users.json");
+$users=get_users_passwords();
+$proimgs = get_profile_image();
+$pronames = get_profile_name();
 
 if (!isset($_COOKIE["username"]) || !isset($_COOKIE["pas"]))
         header("location: login.php");
@@ -36,57 +38,15 @@ else{
 }
 
 
-    if (isset($_COOKIE["deleted_msg"])){
+if (isset($_COOKIE["deleted_msg"]))
+    delete_message();
 
-        $msgs=get_messages("messages.json");
-
-        unset($msgs[$_COOKIE["deleted_msg"]]);
-        $msgs = array_values($msgs);
-
-                    
-        $obj_msgs=json_encode($msgs);
-        file_put_contents("messages.json",$obj_msgs);
-                    
-        array_pop($_COOKIE);
-        setcookie("deleted_msg","",-1);
-
-        
-    }
-
-
-    if (isset($_COOKIE["edited_msg"]) && isset($_COOKIE["num_msg"])){
-
-        $msgs=get_messages("messages.json");
-
-        $msgs[$_COOKIE["num_msg"]]=$_COOKIE["username"]."|".$_COOKIE["edited_msg"];
-        $msgs = array_values($msgs);
-
-                    
-        $obj_msgs=json_encode($msgs);
-        file_put_contents("messages.json",$obj_msgs);
-                    
-        array_shift($_COOKIE);
-        array_shift($_COOKIE);
-
-        setcookie("edited_msg","",-1);
-        setcookie("num_msg","",-1);
-
-        header("location: chatroom.php");
-        
-    }
+if (isset($_COOKIE["edited_msg"]) && isset($_COOKIE["num_msg"]))
+    edit_message();
     
 
+send_message();
 
-
-if (count($_GET)>0){
-    $msgs=get_messages("messages.json");
-    $mymsg=$_COOKIE["username"]."|".$_GET["msg"];
-    array_push($msgs,$mymsg);
-    $obj_msgs=json_encode($msgs);
-    file_put_contents("messages.json",$obj_msgs);
-    header("location: chatroom.php");
-
-}
 ?>
 
 
@@ -118,15 +78,15 @@ if (count($_GET)>0){
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body d-flex flex-column align-items-center gap-3">
-                            <?php if (isset($users[$_COOKIE["username"]]["proimg"])){?>
+                            <?php if (isset($proimgs[$_COOKIE["username"]])){?>
                             <div class="">
-                                <a href="<?php echo $users[$_COOKIE["username"]]["proimg"] ?>" target="_blank" rel="noopener noreferrer"><img class="img-fluid imagee" src="<?php echo $users[$_COOKIE["username"]]["proimg"] ?>" ></a>
+                                <a href="<?php echo $proimgs[$_COOKIE["username"]] ?>" target="_blank" rel="noopener noreferrer"><img class="img-fluid imagee" src="<?php echo $proimgs[$_COOKIE["username"]] ?>" ></a>
                             </div>
                             <?php
                             }
                             else{?>
 
-                            <div class="image "><?php echo strtoupper($users[$_COOKIE["username"]]["profile"][0]) ?></div>
+                            <div class="image "><?php echo strtoupper($pronames[$_COOKIE["username"]][0]) ?></div>
                             
                             <?php
                             }?>
@@ -135,7 +95,7 @@ if (count($_GET)>0){
                             <div class="d-flex gap-2">
 
                                 <span class="text-danger">Profile Name:</span>
-                                <span><?php echo $users[$_COOKIE["username"]]["profile"] ?></span>
+                                <span><?php echo $pronames[$_COOKIE["username"]] ?></span>
                                 
                             </div>
 
@@ -178,38 +138,36 @@ if (count($_GET)>0){
 
         <?php
 
-        $msgs=get_messages("messages.json");
-        $t=0;
+        $msgs=get_messages();
+
         
-        foreach ($msgs as $item) {
-            $item=explode("|",$item);
-            $message=$item[1];
-            $username=$item[0];
+        foreach ($msgs as $t => $message) {
+            $username=$message['username'];
 
             if ($username==$_COOKIE["username"]){
         ?>
 
         <div class="my-message" id="<?php echo 'message-number'.$t ?>">
             
-        <?php if (isset($users[$_COOKIE["username"]]["proimg"])){?>
+        <?php if (isset($proimgs[$_COOKIE["username"]])){?>
                             <div class="">
-                                <img class="img-fluid imagee" src="<?php echo $users[$_COOKIE["username"]]["proimg"] ?>" >
+                                <img class="img-fluid imagee" src="<?php echo $proimgs[$_COOKIE["username"]] ?>" >
                             </div>
                 <?php
                 }
                else{?>
 
                             <div class="image">
-                                <?php echo strtoupper($users[$_COOKIE["username"]]["profile"][0]) ?>
+                                <?php echo strtoupper($pronames[$_COOKIE["username"]][0]) ?>
                             </div>
                             
                 <?php
                 }
                 
-                if (count($item)==3 && $item[1]=="image"){?>
+               if ($message["type"] == "image"){?>
 
                     <span class="my-chat-image">
-                        <a href="<?php echo $item[2] ?>" target="_blank" rel="noopener noreferrer"><img class="chat-image" src="<?php echo $item[2] ?>" ></a>
+                        <a href="<?php echo $message["message"] ?>" target="_blank" rel="noopener noreferrer"><img class="chat-image" src="<?php echo $message["message"] ?>" ></a>
                     </span>
 
                     <?php if(!in_array($_COOKIE["username"],$blockusers)){?>
@@ -221,11 +179,11 @@ if (count($_GET)>0){
                 <?php
                 }
 
-                else{
+                elseif ($message["type"] == "text"){
                 ?>
 
 
-            <span class="my-chat"><?php echo $message ?></span>
+            <span class="my-chat"><?php echo $message["message"] ?></span>
 
             <?php if(!in_array($_COOKIE["username"],$blockusers)){?>
 
@@ -252,11 +210,11 @@ if (count($_GET)>0){
         <div class="other-message" id="<?php echo 'message-number'.$t ?>">
 
 
-            <?php if (isset($users[$username]["proimg"])){?>
+            <?php if (isset($proimgs[$username])){?>
                             <div class="">
 
                                 <button class="btn p-0" id="<?php echo "profile".$t?>" name="<?php echo $username ?>">
-                                    <img class="img-fluid imagee" src="<?php echo $users[$username]["proimg"] ?>">
+                                    <img class="img-fluid imagee" src="<?php echo $proimgs[$username] ?>">
                                 </button>
 
                             </div>
@@ -269,17 +227,17 @@ if (count($_GET)>0){
 
                             <button class="btn p-0" id="<?php echo "profile".$t?>" name="<?php echo $username ?>">
 
-                                <div class="image "><?php echo strtoupper($users[$username]["profile"][0]) ?></div>
+                                <div class="image "><?php echo strtoupper($pronames[$username][0]) ?></div>
                             
                             </button>
 
                             <?php
                             }
                             
-                            if (count($item)==3 && $item[1]=="image"){?>
+                            if ($message['type'] == "image"){?>
 
                                 <span class="other-chat-image">
-                                    <a href="<?php echo $item[2] ?>" target="_blank" rel="noopener noreferrer"><img class="chat-image" src="<?php echo $item[2] ?>" ></a>
+                                    <a href="<?php echo $message['message'] ?>" target="_blank" rel="noopener noreferrer"><img class="chat-image" src="<?php echo $message['message'] ?>" ></a>
                                 </span>
             
                             <?php
@@ -291,11 +249,11 @@ if (count($_GET)>0){
                                 }
                             }
             
-                            else{
+                            elseif($message['type'] == 'text'){
                             ?>
 
 
-            <span class="other-chat"><?php echo $message ?></span>
+            <span class="other-chat"><?php echo $message['message'] ?></span>
 
             <?php
                                 if ($_COOKIE["username"]=="admin"){?>
@@ -442,7 +400,7 @@ if (count($_GET)>0){
         });
 
 
-        for (let i = 0; i < nums; i++) {
+        for (let i = 1; i <= nums+1; i++) {
 
 
 
