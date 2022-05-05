@@ -68,15 +68,15 @@
 <?php
 include "functions.php";
 
-$users=get_users_password("users.json");
-$usernames=array_keys($users);
-
+$users=get_users_passwords();
+$usernames=get_userNames();
+$profiles = get_profile_name();
 
 if (count($_POST)>0){
 
     if (in_array($_POST["username"],$usernames)){
 
-        if ($_POST["pas"]!=$users[$_POST["username"]]["pas"]){
+        if ($_POST["pas"]!=$users[$_POST["username"]]){
             echo '<script>
                     alert("password isn\'t match with username")
                 </script>';
@@ -85,7 +85,7 @@ if (count($_POST)>0){
         else{
             setcookie("username",$_POST["username"],time()+8600);
             setcookie("pas",$_POST["pas"],time()+8600);
-            setcookie("profilename",$users["username"]["profile"],time()+8600);
+            setcookie("profilename",$profiles["username"],time()+8600);
             header("location: chatroom.php");
         }
 
